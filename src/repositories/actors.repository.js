@@ -18,22 +18,6 @@ const actorsRepository = {
   },
 
   /**
-   *
-   * @param {Array<string>} names
-   * @param {Transaction} transaction
-   * @returns {Promise<import('../models/actor.model').ActorModel[]>}
-   */
-  getByNames: (names, transaction) =>
-    Actor.findAll({
-      where: {
-        name: {
-          [Op.in]: names,
-        },
-      },
-      transaction,
-    }),
-
-  /**
    * @param {string[]} names
    * @param {Transaction} transaction
    */

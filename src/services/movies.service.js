@@ -102,20 +102,6 @@ const loadActorsMap = async (actorsNames, transaction) => {
     transaction,
   );
 
-  // const actorsMap = new Map(foundActors);
-
-  // const actorsToCreate = uniqueActorsNames.filter(
-  //   (name) => !actorsMap.has(name),
-  // );
-  // const createdActors = await actorsRepository.createMany(
-  //   actorsToCreate,
-  //   transaction,
-  // );
-
-  // for (const actor of createdActors) {
-  //   actorsMap.set(actor.name, actor.id);
-  // }
-
   return new Map(actors.map(({ id, name }) => [name, id]));
 };
 

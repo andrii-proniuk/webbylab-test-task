@@ -90,15 +90,6 @@ const updateMovieActors = async (movieId, newActorsNames, transaction) => {
     newActorsNames,
     transaction,
   );
-  // const newActorsIds = newActors.map(({ id }) => id);
-
-  // const actorsIdsToRemove = currentActorsIds.filter(
-  //   (currentActorId) => !newActorsIds.includes(currentActorId),
-  // );
-
-  // const actorsIdsToAdd = newActorsIds.filter(
-  //   (newActorId) => !currentActorsIds.includes(newActorId),
-  // );
 
   await MovieActor.destroy({ where: { movieId }, transaction });
 
@@ -106,17 +97,6 @@ const updateMovieActors = async (movieId, newActorsNames, transaction) => {
     newActors.map(({ id }) => ({ movieId, actorId: id })),
     { transaction },
   );
-
-  // const actorsIdsToDelete = movie.actors
-  //   .filter(
-  //     (actor) =>
-  //       !newActorsNames.find((newActor) => newActor.name === actor.name),
-  //   )
-  //   .map(({ id }) => id);
-
-  // const actorsIdsToAdd = newActorsNames.filter(
-  //   (newActor) => !movie.actors.find((actor) => actor.name === newActor),
-  // );
 };
 
 const moviesRepository = {
