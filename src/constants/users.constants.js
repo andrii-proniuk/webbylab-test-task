@@ -1,0 +1,22 @@
+module.exports = {
+  USERS_NAME_MIN_LENGTH: 6,
+  USERS_NAME_MAX_LENGTH: 32,
+
+  USERS_EMAIL_MIN_LENGTH: 8,
+  USERS_EMAIL_MAX_LENGTH: 32,
+
+  USERS_PASSWORD_MIN_LENGTH: 6,
+  USERS_PASSWORD_MAX_LENGTH: 20,
+
+  USERS_PASSWORD_ROUNDS: 8,
+
+  USERS_VALIDATION_ERRORS: {
+    PASSWORD_AND_CONFIRM_PASSWORD_MUST_BE_EQUAL:
+      'password and confirmPassword must be equal',
+  },
+
+  USERS_ERRORS: {
+    EMAIL_ALREADY_EXISTS: 'email already exists',
+    EMAIL_AND_OR_PASSWORD_IS_INVALID: 'email and/or password is invalid',
+  },
+};
