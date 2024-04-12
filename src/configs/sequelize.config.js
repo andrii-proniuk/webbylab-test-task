@@ -10,7 +10,8 @@ const storage = process.env.DB_PATH
 const sequelizeConfig = {
   dialect: 'sqlite',
   storage,
-  // logging: false,
+  // eslint-disable-next-line no-console
+  logging: process.env.NODE_ENV === 'production' ? false : console.log,
 };
 
 module.exports = { sequelizeConfig };
