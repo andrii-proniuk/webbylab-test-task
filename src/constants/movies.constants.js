@@ -30,8 +30,16 @@ module.exports = {
   },
 
   MOVIES_TITLE_MIN_LENGTH: 2,
-  MOVIES_ACTOR_MIN_LENGTH: 2,
+  MOVIES_TITLE_MAX_LENGTH: 64,
+  MOVIES_ACTOR_NAME_MIN_LENGTH: 2,
+  MOVIES_ACTOR_NAME_MAX_LENGTH: 64,
   MOVIES_SEARCH_MIN_LENGTH: 2,
+  MOVIES_SEARCH_MAX_LENGTH: 64,
+
+  MOVIES_ACTOR_NAME_REGEX: new RegExp(
+    /^[а-яіїa-z]+(?:-[а-яіїa-z]+)*(?:,? [а-яіїa-z]+(?:-[а-яіїa-z]+)*)*$/,
+    'i',
+  ),
 
   MOVIES_ORDER_PROPERTY,
 
@@ -42,4 +50,10 @@ module.exports = {
     MOVIES_ORDER_PROPERTY.TITLE,
     MOVIES_ORDER_PROPERTY.YEAR,
   ],
+
+  MOVIES_VALIDATION_ERRORS: {
+    ACTOR_NAME_INVALID:
+      // eslint-disable-next-line max-len
+      'actor\'s name can contain only latin, cyrillic, "," (only after word) and "-" (only between other characters) symbols',
+  },
 };
