@@ -31,7 +31,11 @@ const validateBodyMiddleware = (schema) => async (req, res, next) => {
     }
 
     const errors = e.errors.reduce((acc, error) => {
-      acc[error.path.join('.')] = error.message;
+      const errorPath = error.path.join('.');
+
+      if (!acc[errorPath]) {
+        acc[errorPath] = error.message;
+      }
 
       return acc;
     }, {});
