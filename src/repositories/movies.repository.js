@@ -3,6 +3,10 @@ const { Actor } = require('../models/actor.model');
 const { MovieActor } = require('../models/movie-actor.model');
 const { Movie } = require('../models/movie.model');
 const { actorsRepository } = require('./actors.repository');
+const {
+  MOVIES_TITLE_CHARACTERS_ORDER_MAP,
+  MOVIES_ORDER_PROPERTY,
+} = require('../constants/movies.constants');
 
 /**
  * @param {string} searchParam
@@ -99,6 +103,22 @@ const updateMovieActors = async (movieId, newActorsNames, transaction) => {
   );
 };
 
+/**
+ * @param {string} title
+ * @returns {string}
+ */
+const transformTitleToTitleOrder = (title) => {
+  const letters = title.toLowerCase().split('');
+
+  return letters
+    .map((letter) => {
+      return MOVIES_TITLE_CHARACTERS_ORDER_MAP[letter]
+        .toString()
+        .padStart(2, '0');
+    })
+    .join('');
+};
+
 const moviesRepository = {
   /**
    * @param {import('../dto/create-movie.dto').CreateMovieDto} createMovieDto
@@ -106,7 +126,11 @@ const moviesRepository = {
    * @returns {number} id of created movie
    */
   create: async ({ title, year, format, actors: actorsNames }, transaction) => {
-    const movie = await Movie.create({ title, year, format }, { transaction });
+    const titleOrder = transformTitleToTitleOrder(title);
+    const movie = await Movie.create(
+      { title, titleOrder, year, format },
+      { transaction },
+    );
 
     const actors = await actorsRepository.findOrCreateByNames(
       actorsNames,
@@ -135,9 +159,19 @@ const moviesRepository = {
       },
     });
 
-    const moviesToCreate = moviesData.filter(
-      ({ title }) => !alreadyExistMovies.find((movie) => movie.title === title),
-    );
+    const moviesToCreate = moviesData
+      .filter(
+        ({ title }) =>
+          !alreadyExistMovies.find((movie) => movie.title === title),
+      )
+      .map((movie) => {
+        const titleOrder = transformTitleToTitleOrder(movie.title);
+
+        return {
+          ...movie,
+          titleOrder,
+        };
+      });
 
     const createdMovies = await Movie.bulkCreate(moviesToCreate, {
       transaction,
@@ -165,7 +199,11 @@ const moviesRepository = {
    * @returns {Promise<{ rows: Movie[]; count: number }>}
    */
   get: async (getMoviesDto, transaction) => {
-    const { sort, order, limit, offset } = getMoviesDto;
+    const { order, limit, offset } = getMoviesDto;
+    const sort =
+      getMoviesDto.sort === MOVIES_ORDER_PROPERTY.TITLE
+        ? 'titleOrder'
+        : getMoviesDto.sort;
 
     const where = await composeSearchWhereParams(getMoviesDto);
 
@@ -176,7 +214,13 @@ const moviesRepository = {
         limit,
         offset,
         transaction,
-        include: [Movie.Actor],
+        include: [
+          {
+            model: Actor,
+            as: 'actors',
+            through: { attributes: [] },
+          },
+        ],
       }),
       Movie.count({ where }),
     ]);
