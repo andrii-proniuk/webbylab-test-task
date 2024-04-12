@@ -7,6 +7,7 @@ const { MovieActor } = require('./movie-actor.model');
  * @typedef {Object} MovieAttributes
  * @property {number} id
  * @property {string} title
+ * @property {string} titleOrder
  * @property {number} year
  * @property {string} format
  */
@@ -36,6 +37,11 @@ Movie.init(
       allowNull: false,
       unique: true,
     },
+    titleOrder: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     year: {
       type: DataTypes.SMALLINT,
       allowNull: false,
@@ -47,6 +53,21 @@ Movie.init(
   },
   {
     sequelize,
+    indexes: [
+      {
+        fields: ['titleOrder'],
+        name: 'ix_movies_titleOrder',
+      },
+      {
+        fields: ['year'],
+        name: 'ix_movies_year',
+      },
+    ],
+    scopes: {
+      public: {
+        attributes: { exclude: ['titleOrder'] },
+      },
+    },
   },
 );
 

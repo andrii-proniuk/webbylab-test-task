@@ -11,6 +11,7 @@ const {
   MOVIES_ACTOR_NAME_MAX_LENGTH,
   MOVIES_ACTOR_NAME_REGEX,
   MOVIES_VALIDATION_ERRORS,
+  MOVIES_TITLE_REGEX,
 } = require('../constants/movies.constants');
 
 const CreateMovieDtoValidationSchema = z.object({
@@ -18,7 +19,8 @@ const CreateMovieDtoValidationSchema = z.object({
     .string()
     .trim()
     .min(MOVIES_TITLE_MIN_LENGTH)
-    .max(MOVIES_TITLE_MAX_LENGTH),
+    .max(MOVIES_TITLE_MAX_LENGTH)
+    .regex(MOVIES_TITLE_REGEX, MOVIES_VALIDATION_ERRORS.TITLE_INVALID),
   year: z.coerce.number().min(MOVIES_MIN_YEAR).max(MOVIES_MAX_YEAR),
   format: z.enum(MOVIES_ACCEPTED_FORMATS),
   actors: z

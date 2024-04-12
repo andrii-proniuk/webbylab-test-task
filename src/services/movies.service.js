@@ -8,6 +8,7 @@ const {
   MOVIES_IMPORT_PROPERTIES,
 } = require('../constants/movies.constants');
 const { Transaction } = require('sequelize');
+const { Movie } = require('../models/movie.model');
 
 /**
  * @param {string} movieBlock
@@ -105,6 +106,16 @@ const loadActorsMap = async (actorsNames, transaction) => {
   return new Map(actors.map(({ id, name }) => [name, id]));
 };
 
+/**
+ * @param {Movie} movie
+ * @returns {Omit<import('../models/movie.model').MovieAttributes, 'titleOrder'>}
+ */
+const toPlainMovie = (movie) => {
+  delete movie.dataValues.titleOrder;
+
+  return { ...movie.dataValues };
+};
+
 const moviesService = {
   /**
    * @param {import('../dto/create-movie.dto').CreateMovieDto} createMovieDto
@@ -117,7 +128,7 @@ const moviesService = {
     const movie = await moviesRepository.getById(movieId);
 
     return {
-      data: movie,
+      data: toPlainMovie(movie),
       status: 1,
     };
   },
@@ -129,7 +140,7 @@ const moviesService = {
     const { rows, count } = await moviesRepository.get(getMoviesDto);
 
     return {
-      data: rows,
+      data: rows.map(toPlainMovie),
       meta: {
         total: count,
       },
@@ -144,7 +155,7 @@ const moviesService = {
     const movie = await moviesRepository.getById(id);
 
     return {
-      data: movie,
+      data: toPlainMovie(movie),
       status: 1,
     };
   },
@@ -161,7 +172,7 @@ const moviesService = {
     const movie = await moviesRepository.getById(id);
 
     return {
-      data: movie,
+      data: toPlainMovie(movie),
       status: 1,
     };
   },
@@ -194,7 +205,7 @@ const moviesService = {
     });
 
     return {
-      data: createdMovies,
+      data: createdMovies.map(toPlainMovie),
       meta: {
         total: moviesFromFile.length,
         imported: createdMovies.length,

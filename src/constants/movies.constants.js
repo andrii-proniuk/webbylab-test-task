@@ -11,6 +11,24 @@ const MOVIES_ORDER_PROPERTY = {
   YEAR: 'year',
 };
 
+const englishAlphabet = 'abcdefghijklmnopqrstuvwxyz';
+const cyrillicAlphabet = 'абвгдежзиіїйклмнопрстуфхцчшщъыьэюя';
+const numbers = '0123456789';
+
+/** @type {Object<string, number>} */
+const MOVIES_TITLE_CHARACTERS_ORDER_MAP = [
+  '-',
+  ...numbers.split(''),
+  ...englishAlphabet.split(''),
+  ...cyrillicAlphabet.split(''),
+  ',',
+  ' ',
+].reduce((acc, character, index) => {
+  acc[character] = index;
+
+  return acc;
+}, {});
+
 module.exports = {
   MOVIES_MIN_YEAR: 1900,
   MOVIES_MAX_YEAR: new Date().getFullYear(),
@@ -36,6 +54,11 @@ module.exports = {
   MOVIES_SEARCH_MIN_LENGTH: 2,
   MOVIES_SEARCH_MAX_LENGTH: 64,
 
+  MOVIES_TITLE_REGEX: new RegExp(
+    /^[а-яіїa-z\d]+(?:-[а-яіїa-z\d]+)*(?:(?:(?:,? )| - )[а-яіїa-z\d]+(?:-[а-яіїa-z\d]+)*)*$/,
+    'i',
+  ),
+
   MOVIES_ACTOR_NAME_REGEX: new RegExp(
     /^[а-яіїa-z]+(?:-[а-яіїa-z]+)*(?:,? [а-яіїa-z]+(?:-[а-яіїa-z]+)*)*$/,
     'i',
@@ -55,5 +78,10 @@ module.exports = {
     ACTOR_NAME_INVALID:
       // eslint-disable-next-line max-len
       'actor\'s name can contain only latin, cyrillic, "," (only after word) and "-" (only between other characters) symbols',
+
+    TITLE_INVALID:
+      'title can contain only latin, cyrillic, "," (only after word), "-" and numbers',
   },
+
+  MOVIES_TITLE_CHARACTERS_ORDER_MAP,
 };
